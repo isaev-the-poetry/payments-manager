@@ -1,0 +1,7 @@
+{
+  "stripe": {
+    "public_key": "pk_test_51HLC68ApoMYNQ49DfBQyXEaK6F3Y7FScCqOzeAF5gqsKBhHChx8PEDh93EUnuRU1yYijdxZ0yBWYGADs6iB7Lp7p000Zrhp8pf",
+    "endpoint_secret": "whsec_958d64153c716ca64b8227b646516090a026ba1377e9f9a1a3763e811b025949",
+    "secret_key": "sk_test_51HLC68ApoMYNQ49DKZHYrxGozdvPm6expHD27BObtnv2gs7xifzHhmAUXsgIA05zCf3OTbC3kXBt9sia30kPKi3Z00jpG7dgdc"
+  }
+}

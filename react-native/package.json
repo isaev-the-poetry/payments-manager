@@ -1,0 +1,17 @@
+{
+  "name": "payments-manager-native",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-native-firebase/functions": "^15.0.0",
+    "@stripe/stripe-react-native": "^0.13.1",
+    "react": "^18.2.0",
+    "react-native": "^0.69.0"
+  }
+}
