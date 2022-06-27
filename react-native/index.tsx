@@ -29,7 +29,7 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
     });
   }, []); 
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); 
-  const [ isLoading, setLoading] = useState(false)
+  const [ isLoading, setLoading] = useState(true)
   const CreatePaymentSession = functions().httpsCallable('CreatePaymentSession')
  
   const openPaymentSheet = async () => {
