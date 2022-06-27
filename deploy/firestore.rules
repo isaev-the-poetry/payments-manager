@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function not_expired_claim() { 
+      return timestamp.date( int(request.auth.token.u_app_expire_object.year), int(request.auth.token.u_app_expire_object.month), int(request.auth.token.u_app_expire_object.day) ) >= request.time;
+    }
+
+    function user_is_owner(doc_id) { 
+      return request.auth != null && request.auth.uid == doc_id;
+    }
+
+
+    match /cards/{doc_id} {
+      allow read: if not_expired_claim(); 
+      allow delete: if user_is_owner(doc_id);
+      allow write, update: if user_is_owner(doc_id); //&& request.resource.data.created == resource.data.created &&
+      // (request.resource.data.updated == request.time);       
+      allow create: if user_is_owner(doc_id); //&& request.resource.data.created == request.time; 
+        // Поле статус premium его claim
+    }
+
+    match /proposals/{doc_id} {
+       allow read: if not_expired_claim(); 
+       allow delete: if resource.data.uid == request.auth.uid; 
+   	   allow write, create, update: if request.resource.data.uid == request.auth.uid; 
+    }
+
+    match /events/{doc_id} {
+       allow read: if true; 
+       allow write: if false;
+    }
+
+    match /news/{doc_id} {
+       allow read: if true;  // not_expired_claim(); 
+       allow write: if false;
+    } 
+
+    match /user_meta/{doc_id} {
+      allow read: if true; // надо придумать с рефрешем 
+      allow write, create, update: if user_is_owner(doc_id);
+    }
+
+		match /topics/{doc_id} {
+      allow read,write, create, update: if true;
+      
+      match /rooms/{room_id} {
+      	allow read,write, create, update: if true;
+        
+          match /messages/{message_id} {
+          allow read,write, create, update: if true;
+       	 }
+          match /requests/{request_id} {
+          allow read,write, create, update: if true;
+       	 }
+        
+      }
+    }
+    
+    match /games/{doc_id} {
+       allow read: if true; 
+       allow write: if true;
+       
+       match /players/{player_id}
+       {
+       		allow read, write, create, update: if true;
+          // учесть, что админ в веб тоже читает, надо либо придумать как его авторизовать,
+          // либо разрешить вообще кому угодно менять доки в игре
+       }
+       match /results/{player_id}
+       {
+       		allow create: if true;
+          // учесть, что админ в веб тоже читает, надо либо придумать как его авторизовать,
+          // либо разрешить вообще кому угодно менять доки в игре
+       }
+       match /reviews/{player_id}
+       {
+       		allow create,write: if user_is_owner(player_id);
+       }
+    }
+    
+     match /config/{doc_id} {
+       allow read: if true; 
+       allow write: if true;
+    }
+	
+    match /guestcards/{doc_id} {
+       allow read: if true; 
+       allow write: if true;
+    }
+    
+    match /contacts/{doc_id} {
+       allow read: if true; 
+       allow write: if true;
+    }
+
+    match /payments/{doc_id} {
+       allow read: if true; 
+       allow write: if false;
+    } 
+  }
+}
+
+// Пригодится
+// https://cloud.google.com/firestore/docs/security/rules-fields
+
+
+// firebase deploy --only firestore:rules

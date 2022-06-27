@@ -1,0 +1,41 @@
+{
+  "_meta": {
+    "template_version": 0,
+    "exclude_metadata": false
+  },
+  "fixtures": [
+    {
+      "name": "payment_intent",
+      "expected_error_type": "",
+      "path": "/v1/payment_intents",
+      "method": "post",
+      "params": {
+        "amount": 50,
+        "confirm": "true",
+        "currency": "eur",
+        "description": "(created by Stripe CLI)",
+        "payment_method": "pm_card_visa",
+        "payment_method_types": [
+          "card"
+        ],
+        "shipping": {
+          "address": {
+            "city": "Berlin",
+            "country": "DE",
+            "line1": "510 Townsend St",
+            "postal_code": "94103",
+            "state": "CA"
+          },
+          "name": "Jenny Rosen"
+        },
+        "metadata":
+        {
+            "uid": "XMA4VO6HTZNMWNX33fcs80RQaim2",
+            "product_code": "OpenContact",
+            "product_variation": "GameCodeMock777"
+        }
+      }
+    }
+  ],
+  "env": null
+}

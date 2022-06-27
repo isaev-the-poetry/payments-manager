@@ -1,0 +1,9 @@
+{
+  "name": "payments-manager",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "CC-BY-1.0",
+  "devDependencies": {
+    "stripe": "^9.9.0"
+  }
+}
