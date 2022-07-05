@@ -21,6 +21,7 @@ export type PaymentsManager = {
     ) => Promise<boolean>
   CreateActivationClaim: ( uid:string, product_code:string, product_variation?:string ) => Promise<boolean>
   CompeteActivationClaim: ( product_code: string, docID:string ) => Promise<boolean>
+  GetPaymentSessionID: (client_secret: string) => Promise<string|false>
 }
 
 export type MakertPlaceManager = {
@@ -33,5 +34,5 @@ export type MakertPlaceManager = {
 export {webhook} from "./webhook" 
 export {RouteActivation} from "./activator" 
 export {CreatePaymentSession} from "./session"  
-
-export {ActivateOpenContact} from "./products/OpenContact"
+export {CancellPaymentSession} from "./cancell"
+export {ActivateOpenContact} from "./products/OpenContact" 

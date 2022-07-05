@@ -6,6 +6,7 @@ import * as functions from "firebase-functions";
 import type { PaymentsManager } from "../index";
 
 import {PaymentMeta, PaymentEvent, ProductActivationClaim } from "../../../specs"
+import { firestore } from "firebase-admin";
 
 
 export const SavePaymentEvent:PaymentsManager['SavePaymentEvent'] =  async (id, status, uid, currency, amount, metadata, intent) =>
@@ -60,4 +61,23 @@ export const CompeteActivationClaim:PaymentsManager["CompeteActivationClaim"] = 
         functions.logger.error(err)
         return false
     } 
+}
+
+
+export const GetPaymentSessionID:PaymentsManager['GetPaymentSessionID'] =  async (secret) =>
+{  
+    try{ 
+        const Payments:firestore.QuerySnapshot = await db.collection('payments').where('events.created.intent.client_secret', '==', secret).limit(1).get()
+        if(Payments.empty) return false
+         
+        const [PaymentSnapshot] = Payments.docs
+        const PaymentData = PaymentSnapshot.data() as PaymentMeta<any> 
+        const SessionID = PaymentData.events?.created?.intent?.id || false
+ 
+        return SessionID  
+    }catch(err)
+    {   
+        functions.logger.error(err)
+        return false
+    }
 }

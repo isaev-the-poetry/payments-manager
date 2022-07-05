@@ -18,7 +18,7 @@
  *
  * Как подключить без публикации в npm 
   "dependencies": {
-   "payments-manaer": "https://github.com/zxcabs/node-lib/tarball/v.0.0.2"
+   "payments-manager": "git+ssh://git@github.com:isaev-the-poetry/payments-manager.git"
     }
  */
  
@@ -49,7 +49,7 @@ export type PaymentMeta<OrderInfo> = {
 export type OrderMeta = {
     uid: string
     product_code: string
-    product_variation: string
+    [product_param:string]: string 
 }
 
 export type ProductActivationClaim = {
