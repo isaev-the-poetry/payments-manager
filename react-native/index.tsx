@@ -12,6 +12,7 @@ import { initStripe, useStripe } from '@stripe/stripe-react-native';
 type PayButtonProps = {
   onSuccess: () => any
   onError: (error: any) => any
+  onCancell?: () => any
   publishableKey: string
   merchantIdentifier?: string
   title?: string
@@ -20,7 +21,7 @@ type PayButtonProps = {
 }
 
 export const PayButton:(PayButtonProps:PayButtonProps) => React.Element = 
-({title = "Оплатить", productName, productParams, onSuccess, onError, publishableKey, merchantIdentifier = "" }) =>
+({title = "Оплатить", productName, productParams, onSuccess, onError,onCancell, publishableKey, merchantIdentifier = "" }) =>
 { 
   useEffect(() => {
     initStripe({
@@ -31,7 +32,8 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); 
   const [ isLoading, setLoading] = useState(false)
   const CreatePaymentSession = functions().httpsCallable('CreatePaymentSession')
- 
+  const CancellPaymentSession = functions().httpsCallable('CancellPaymentSession')
+
   const openPaymentSheet = async () => {
     try {
       setLoading(true);
@@ -41,14 +43,15 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
           paymentIntent,
           ephemeralKey,
           customer,
-        },
-        error: InitSessionError
+          error: InitSessionError,
+          status: InitSessionStatus
+        } 
       } = await CreatePaymentSession({ product: productName, ...productParams });
-  
-      if (!paymentIntent) {
+        
+      if (!paymentIntent) { 
         onError(InitSessionError)
         return
-      }
+      } 
   
       const { error:initError } = await initPaymentSheet({
         customerId: customer,
@@ -56,15 +59,27 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
         paymentIntentClientSecret: paymentIntent,
         allowsDelayedPaymentMethods: true,
       });
- 
+   
       if (initError) throw initError; 
 
-      const { error:presentError } = await presentPaymentSheet();
-      if (presentError) throw presentError; 
-       
-      onSuccess()  
+      const { error:presentError } = await presentPaymentSheet(); 
+      if (presentError) 
+      {
+        if (presentError?.code == "Canceled") 
+        {
+          await CancellPaymentSession({paymentIntent}) 
+          onCancell && onCancell()
+        }
+        else
+          throw presentError;  
+      }
+      else
+      { 
+        onSuccess()  
+      }
     }
     catch (e: any) {
+      console.log(e); 
       onError(e) 
     }
     finally{

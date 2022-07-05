@@ -2,28 +2,25 @@
 
 import * as functions from "firebase-functions";
 import type Stripe from 'stripe'
-
-const stripe = require('stripe')(functions.config().stripe.secret_key);
-const stripePublicKey = functions.config().stripe.public_key
-
 import { OrderMeta } from "../../specs" 
 import { GetProduct, LoadCustomer, SaveCustomer } from "./adapters/firestore.marketplace.adapter";
-
+ 
+const stripe = require('stripe')(functions.config().stripe.secret_key);
+const stripePublicKey = functions.config().stripe.public_key
 
 export const CreatePaymentSession = functions.region("europe-west3")
 .runWith({
   allowInvalidAppCheckToken: true  // Opt-out: Requests with invalid App
                                    // Check tokens continue to your code.
-}).https.onCall( async (data, context) => {
-    const ProductCode = data.product
-    const ProductVariation = data.product_variation
-    
-    // const uid = context.auth?.uid
-    // if (!uid) return ({status: 'unauthorised'}) 
-    const uid = "1"; // testing purpose
-   
+}).https.onCall( async (data, context) => { 
+    const {product:ProductCode, ...ProductParams} = data 
+
+    //const uid = context.auth?.uid
+    //if (!uid) return ({error: { message: 'unauthorised'}})  
+    const uid = "1"
+
     const product = await GetProduct(ProductCode)
-    if(!product) return ({status: 'no product specified'})
+    if(!product) return ({ error: { message: 'no product specified'} })
    
     let customer = await LoadCustomer(uid)
     if (!customer)
@@ -40,7 +37,7 @@ export const CreatePaymentSession = functions.region("europe-west3")
     const OrderDetails:OrderMeta = {
       uid,
       product_code:ProductCode,
-      product_variation: ProductVariation
+      ...ProductParams
     }
   
     const paymentIntent = await stripe.paymentIntents.create({
@@ -65,8 +62,10 @@ export const CreatePaymentSession = functions.region("europe-west3")
       paymentIntent: paymentIntent.client_secret,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
-      publishableKey: stripePublicKey
+      publishableKey: stripePublicKey,
+      status: "success"
     });
   
   });
+  
   
