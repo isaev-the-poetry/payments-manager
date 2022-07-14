@@ -1,7 +1,7 @@
 
 
 import * as functions from "firebase-functions"; 
-//import { OrderMeta } from "../../specs" 
+import { OrderMeta } from "../../specs" 
 import {GetPaymentSessionID} from "./adapters/firestore.payments.adapter"
 
 const stripe = require('stripe')(functions.config().stripe.secret_key);
@@ -15,13 +15,12 @@ export const CancellPaymentSession = functions.region("europe-west3")
         const { paymentIntent: Secret } = data as { paymentIntent: string } 
         const sid = await GetPaymentSessionID(Secret)
         
-        //Auth and session ownership disabled in dev purpose 
-
-        //const paymentIntent = await stripe.paymentIntents.retrieve(sid)
-        //const OrderDetails: OrderMeta = paymentIntent.metadata
+     
+        const paymentIntent = await stripe.paymentIntents.retrieve(sid)
+        const OrderDetails: OrderMeta = paymentIntent.metadata
          
-        //if (OrderDetails.uid != context.auth?.uid)
-        //    return ({ status: 'unauthorised' })
+        if (OrderDetails.uid != context.auth?.uid)
+           return ({ error: {message: 'unauthorised'} })
 
         const result = await stripe.paymentIntents.cancel(sid)
 

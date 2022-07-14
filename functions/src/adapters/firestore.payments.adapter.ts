@@ -34,11 +34,11 @@ export const SavePaymentEvent:PaymentsManager['SavePaymentEvent'] =  async (id, 
     }
 }
 
-export const CreateActivationClaim:PaymentsManager["CreateActivationClaim"] = async (uid, code, variation) =>
+export const CreateActivationClaim:PaymentsManager["CreateActivationClaim"] = async (uid, code, params) =>
 {
     const ActivationClaim:ProductActivationClaim = {
         status: 'pending', 
-        product_variation: variation,
+        ...params,
         uid
     } 
     try{

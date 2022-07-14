@@ -14,10 +14,10 @@ export const CreatePaymentSession = functions.region("europe-west3")
                                    // Check tokens continue to your code.
 }).https.onCall( async (data, context) => { 
     const {product:ProductCode, ...ProductParams} = data 
-
-    //const uid = context.auth?.uid
-    //if (!uid) return ({error: { message: 'unauthorised'}})  
-    const uid = "1"
+ 
+    const uid = context.auth?.uid
+    if (!uid) return ({error: { message: 'unauthorised'}})  
+    //const uid = "1"
 
     const product = await GetProduct(ProductCode)
     if(!product) return ({ error: { message: 'no product specified'} })

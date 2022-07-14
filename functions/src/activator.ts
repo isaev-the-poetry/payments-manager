@@ -15,6 +15,6 @@ export const RouteActivation = functions.region("europe-west3").firestore.docume
 
   if ( NewPaymentRecord?.events?.succeeded && !OldPaymentRecord?.events?.succeeded && NewPaymentRecord.uid )
   {
-    await CreateActivationClaim(NewPaymentRecord.uid, NewPaymentRecord.events.succeeded.metadata.product_code, NewPaymentRecord.events.succeeded.metadata.product_variation )
+    await CreateActivationClaim(NewPaymentRecord.uid, NewPaymentRecord.events.succeeded.metadata.product_code, NewPaymentRecord.events.succeeded.metadata )
   }
 })

@@ -19,7 +19,7 @@ export type PaymentsManager = {
     metadata: { [key: string]: string }, // ограничение процессинга
     intent: any
     ) => Promise<boolean>
-  CreateActivationClaim: ( uid:string, product_code:string, product_variation?:string ) => Promise<boolean>
+  CreateActivationClaim: ( uid:string, product_code:string, params?:{ [key: string]: string } ) => Promise<boolean>
   CompeteActivationClaim: ( product_code: string, docID:string ) => Promise<boolean>
   GetPaymentSessionID: (client_secret: string) => Promise<string|false>
 }

@@ -12,6 +12,5 @@ export const ActivateOpenContact = functions.region("europe-west3").firestore.do
   
   functions.logger.info("ActivateOpenContactMock", {ActivationClaim})
 
-  await CompeteActivationClaim( context.params?.productID , snap.ref.id ) 
-   
+  await CompeteActivationClaim( context.params?.productID , snap.ref.id )  
 })
