@@ -17,11 +17,12 @@ type PayButtonProps = {
   merchantIdentifier?: string
   title?: string
   productName: string
-  productParams: { [key: string]: string }
+  productParams: { [key: string]: string } 
+  Component?: React.Element
 }
 
 export const PayButton:(PayButtonProps:PayButtonProps) => React.Element = 
-({title = "Оплатить", productName, productParams, onSuccess, onError,onCancell, publishableKey, merchantIdentifier = "" }) =>
+({title = "Оплатить", productName, productParams, onSuccess, onError,onCancell, publishableKey, merchantIdentifier = "", Component=Button }) =>
 { 
   useEffect(() => {
     initStripe({
@@ -43,13 +44,12 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
           paymentIntent,
           ephemeralKey,
           customer,
-          error: InitSessionError,
-          status: InitSessionStatus
+          error
         } 
       } = await CreatePaymentSession({ product: productName, ...productParams });
         
-      if (!paymentIntent) { 
-        onError(InitSessionError)
+      if (!paymentIntent) {  
+        onError(error?.message)
         return
       } 
   
@@ -88,8 +88,8 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
   };
 
   return (<>
-    <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-      <Button disabled={isLoading} title={title} onPress={openPaymentSheet} />
+    <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <Component disabled={isLoading} title={title} onPress={openPaymentSheet} />
     </View>
   </>
   );
