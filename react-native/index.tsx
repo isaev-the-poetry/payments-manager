@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, View } from "react-native"
+import { Button, View, ActivityIndicator } from "react-native"
 import functions from '@react-native-firebase/functions';
 
 //@ts-ignore
@@ -89,7 +89,8 @@ export const PayButton:(PayButtonProps:PayButtonProps) => React.Element =
 
   return (<>
     <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-      <Component disabled={isLoading} title={title} onPress={openPaymentSheet} />
+      {isLoading ? <ActivityIndicator color={"grey"} size={"small"}/>: undefined}
+      <Component disabled={isLoading} title={isLoading?"Обработка":title} onPress={openPaymentSheet} />
     </View>
   </>
   );
